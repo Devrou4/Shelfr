@@ -1,0 +1,29 @@
+{% extends "shelfs/base.html" %}
+{% block content %}
+  
+      <div class="container-fluid">
+        <div class="row row-cols-auto g-3 m-3 text-center">
+
+          {% for shelf in shelfs %}
+          <div class="col">
+            <div class="card" style="height: 300px; width: 200px;">
+              <img src="{{ shelf.image }}" class="card-img-top" style="object-fit: cover; height: 100%;"alt="...">
+              <div class="card-body">
+                <h5 class="card-title">{{ shelf.title }}</h5>
+                <p class="card-text">{{ shelf.content }}</p>
+              </div>
+                
+            </div>
+          </div>
+          {% endfor %}
+
+          <div class="col">
+            <div class="card d-flex justify-content-center align-items-center" style="height: 300px; width: 200px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                </svg>
+            </div>
+          </div>
+
+{% endblock content %}
