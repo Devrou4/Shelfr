@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Shelf(models.Model):
     title = models.CharField(max_length=20)
-    content = models.TextField(default='')
+    content = models.TextField(blank=True, null=True)
     image = models.ImageField(default='shelf.png')
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -14,7 +14,7 @@ class Shelf(models.Model):
     
 class Item(models.Model):
     title = models.CharField(max_length=20)
-    content = models.TextField(default='')
+    content = models.TextField(blank=True, null=True)
     image = models.ImageField(default='https://static.thenounproject.com/png/4241034-200.png')
     quantity = models.PositiveIntegerField(default=1)
     date = models.DateTimeField(default=timezone.now)

@@ -20,7 +20,7 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
           <li class="nav-item">
-            <a href="#" class="nav-link active">
+            <a href="{% url 'shelfr-home' %}" class="nav-link active">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-archive-fill" viewBox="0 0 16 16">
                     <path d="M12.643 15C13.979 15 15 13.845 15 12.5V5H1v7.5C1 13.845 2.021 15 3.357 15zM5.5 7h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1M.8 1a.8.8 0 0 0-.8.8V3a.8.8 0 0 0 .8.8h14.4A.8.8 0 0 0 16 3V1.8a.8.8 0 0 0-.8-.8z"/>
                 </svg>
@@ -53,22 +53,16 @@
           </li>
         </ul>
         <hr>
-        <div class="dropdown">
-          <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="{% static 'default_profile.svg' %}" alt="" width="32" height="32" class="rounded-circle me-2">
-            <strong>Profile</strong>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-            <li><a class="dropdown-item" href="#">New project...</a></li>
-            <li><a class="dropdown-item" href="#">Settings</a></li>
-            <li><a class="dropdown-item" href="#">Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#" onclick="logout()">Sign out</a></li>
-            <form id="logout_form" action="{% url 'logout' %}" method="post">
-              {% csrf_token %}
-            </form>
-          </ul>
-        </div>
+        <button class="btn btn-outline-danger" onclick="logout()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-left mb-1" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z"/>
+            <path fill-rule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708z"/>
+          </svg>
+          <span>Sign out</span>
+        </button>
+        <form id="logout_form" action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+        </form>
       </div>
 
       {% block content %}{% endblock content %}
