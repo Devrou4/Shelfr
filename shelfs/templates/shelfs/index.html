@@ -8,7 +8,7 @@
           <div class="col">
             <a href="{% url 'shelfr-shelf' shelf.id %}" style="text-decoration: none;">
             <div class="card" style="height: 300px; width: 200px;">
-              <img src="{{ shelf.image }}" class="card-img-top" style="object-fit: cover; height: 100%;"alt="...">
+              <img src="{{ shelf.image.url }}" class="card-img-top" style="object-fit: cover; height: 100%;" alt="...">
               <div class="card-body">
                 <h5 class="card-title">{{ shelf.title }}</h5>
                 <p class="card-text">{{ shelf.content }}</p>

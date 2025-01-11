@@ -1,12 +1,31 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from os.path import join
+
+def item_image_upload_path(instance, filename):
+    """
+    Generate the file path for the uploaded item image.
+    Path: media/<user_id>/<shelf_id>/images/<filename>
+    """
+    return join(
+        f"{instance.shelf.owner.id}/{instance.shelf.id}/images", filename
+    )
+
+def shelf_image_upload_path(instance, filename):
+    """
+    Generate the file path for the uploaded item image.
+    Path: media/<user_id>/<shelf_id>/images/<filename>
+    """
+    return join(
+        f"{instance.owner.id}/{instance.id}/images", filename
+    )
 
 # Create your models here.
 class Shelf(models.Model):
     title = models.CharField(max_length=20)
     content = models.TextField(blank=True, null=True)
-    image = models.ImageField(default='shelf.png')
+    image = models.ImageField(default='../static/icons/shelf.svg', upload_to=shelf_image_upload_path)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -15,7 +34,7 @@ class Shelf(models.Model):
 class Item(models.Model):
     title = models.CharField(max_length=20)
     content = models.TextField(blank=True, null=True)
-    image = models.ImageField(default='https://static.thenounproject.com/png/4241034-200.png')
+    image = models.ImageField(default='../static/icons/item.svg', upload_to=item_image_upload_path)
     quantity = models.PositiveIntegerField(default=1)
     date = models.DateTimeField(default=timezone.now)
     shelf = models.ForeignKey(Shelf, on_delete=models.CASCADE)
