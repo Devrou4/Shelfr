@@ -1,0 +1,13 @@
+{% extends "shelfs/base.html" %}
+{% block content %}
+<div class="container text-center d-flex flex-column justify-content-center align-items-center mt-5">
+    <h1 class="">{{ object.title }} x{{ object.quantity }}</h1>
+
+    <img src="{{ object.image.url }}" class="img-thumbnail" style="width: 300px; height: auto;">
+    <span class="text-muted fw-light mb-3">Added on {{ object.date }}</span>
+
+    <div class="bg-body-secondary border rounded w-50 align-self-center">
+        {{ object.content }}
+    </div>
+</div>
+{% endblock content %}

@@ -10,7 +10,7 @@
   </head>
   <body class="bg-dark-subtle" data-bs-theme="dark">
     <div class="d-flex">
-    <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark min-vh-100" style="width: 280px;">
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; position: sticky; top: 0; height: 100vh; overflow-y: auto;">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-bookshelf" viewBox="0 0 16 16">
                 <path d="M2.5 0a.5.5 0 0 1 .5.5V2h10V.5a.5.5 0 0 1 1 0v15a.5.5 0 0 1-1 0V15H3v.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 .5-.5M3 14h10v-3H3zm0-4h10V7H3zm0-4h10V3H3z"/>
@@ -65,8 +65,9 @@
         </form>
       </div>
 
+      <div class="flex-grow-1">
       {% block content %}{% endblock content %}
-      
+      </div>
 
         </div>
       </div>

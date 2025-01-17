@@ -6,6 +6,7 @@
 
           {% for item in items %}
           <div class="col">
+            <a href="{% url 'shelfr-item-detail' shelf_pk=shelf_id pk=item.pk %}" style="text-decoration: none;">
             <div class="card" style="height: 300px; width: 200px;">
               <img src="{{ item.image.url }}" class="card-img-top p-1" style="object-fit: scale-down; height: 200px; " alt="Item">
               <div class="card-body">
@@ -14,6 +15,7 @@
               </div>
                 
             </div>
+            </a>
           </div>
           {% endfor %}
 

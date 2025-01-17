@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DetailView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Shelf, Item
@@ -40,3 +40,6 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
     
     def get_success_url(self):
         return reverse('shelfr-shelf', kwargs={'pk': self.kwargs['pk']})
+
+class ItemDetailView(LoginRequiredMixin, DetailView):
+    model = Item
