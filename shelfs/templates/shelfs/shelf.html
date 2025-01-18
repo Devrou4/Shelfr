@@ -1,6 +1,7 @@
 {% extends "shelfs/base.html" %}
 {% block content %}
-  
+
+
       <div class="container-fluid">
         <div class="row row-cols-auto g-3 m-3 text-center">
 
@@ -30,4 +31,7 @@
             </a>
           </div>
 
+          <a href="{% url 'shelfr-shelf-update' pk=shelf_id %}" class="">
+            <button type="button" class="btn btn-outline-secondary position-absolute bottom-0 end-0 m-1">Edit</button>
+          </a>
 {% endblock content %}
