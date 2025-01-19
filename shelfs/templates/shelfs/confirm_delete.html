@@ -1,0 +1,17 @@
+{% extends "shelfs/base.html" %}
+{% block content %}
+
+    <div class="container">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <h1>Are you sure you want to delete shelf "{{ object.title }}"?</h1>
+            </fieldset>
+            <fieldset class="form-group">
+                <button class="btn btn-outline-danger" type="submit">Confirm</button>
+                <a class="btn btn-outline-secondary" href="{% url 'shelfr-shelf' object.id %}">Cancel</a>
+            </fieldset>
+        </form>
+    </div>
+
+{% endblock content %}

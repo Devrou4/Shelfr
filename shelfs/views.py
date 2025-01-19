@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from django.views.generic import CreateView, DetailView, UpdateView
+from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Shelf, Item
@@ -44,6 +44,19 @@ class ShelfUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         if self.request.user == shelf.owner:
             return True
         return False
+    
+class ShelfDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Shelf
+    template_name = "shelfs/confirm_delete.html"
+
+    def get_success_url(self):
+        return reverse('shelfr-home')
+
+    def test_func(self):
+        shelf = self.get_object()
+        if self.request.user == shelf.owner:
+            return True
+        return False
 
 class ItemCreateView(LoginRequiredMixin, CreateView):
     model = Item
@@ -80,3 +93,17 @@ class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class ItemDetailView(LoginRequiredMixin, DetailView):
     model = Item
+
+class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Item
+    template_name = "shelfs/confirm_delete.html"
+
+    def get_success_url(self):
+        item = self.get_object()
+        return reverse('shelfr-shelf', kwargs={'pk': item.shelf.id})
+
+    def test_func(self):
+        item = self.get_object()
+        if self.request.user == item.shelf.owner:
+            return True
+        return False
