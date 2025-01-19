@@ -1,0 +1,18 @@
+{% extends "shelfs/base.html" %}
+{% load crispy_forms_tags %}
+  {% block content %}
+    
+    <div class="text-center">
+        <h1>Settings</h1>
+    </div>
+    <form method="POST" class="m-5">
+        {% csrf_token %}
+        <fieldset class="form-group w-50">
+            {{ form|crispy }}
+        </fieldset>
+        <div class="form-group">
+            <button type="submit" class="btn btn-outline-primary">Save</button>
+        </div>
+    </form>
+
+  {% endblock content %}
