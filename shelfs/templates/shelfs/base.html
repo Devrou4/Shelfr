@@ -67,6 +67,20 @@
 
       <div class="flex-grow-1">
 
+        <div class="d-flex justify-content-end align-items-center p-3 border-bottom bg-dark text-white" style="height: 68px;">
+          <!-- Add any content you want here -->
+          {% if 'delete' in request.path %}
+          <div class="me-auto fs-5">{{ shelf.title }} {{ object.shelf.title }} / {% if object.shelf %}{{object.title}} / {% endif %}<span class="text-danger">DELETE</span></div>
+          {% elif 'update' in request.path %}
+          <div class="me-auto fs-5">{{ shelf.title }} {{ object.shelf.title }} / {% if object.shelf %}{{object.title}} / {% endif %}<span class="text-info">EDIT</span></div>
+          {% elif 'new' in request.path %}
+          <div class="me-auto fs-5">{{ shelf.title }} {{ object.shelf.title }} / {% if object.shelf %}{{object.title}} / {% endif %}<span class="text-primary">NEW</span></div>
+          {% else %}
+          <div class="me-auto fs-5">{{ shelf.title }} {{ object.shelf.title }} / {{ object.title }}</div>
+          {% endif %}
+          {% block actions %}{% endblock actions %}
+        </div>
+
         {% if messages %}
           {% for message in messages %}
             <div class="alert alert-{{ message.tags }}">{{ message }}</div>

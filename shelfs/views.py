@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -13,7 +13,8 @@ def index(request):
 
 @login_required
 def shelf(request, pk):
-    context = { 'items': Item.objects.filter(shelf_id=pk), 'shelf_id':pk  }
+    shelf = get_object_or_404(Shelf, pk=pk)
+    context = { 'items': Item.objects.filter(shelf_id=pk), 'shelf_id':pk, 'shelf':shelf  }
     return render(request, 'shelfs/shelf.html', context)
 
 
@@ -28,6 +29,7 @@ class ShelfCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse('shelfr-home')
     
+
 class ShelfUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Shelf
     fields = ['title', 'content', 'image']
@@ -39,24 +41,38 @@ class ShelfUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         return reverse('shelfr-home')
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        shelf = self.get_object()
+        context['cancel_url'] = reverse_lazy("shelfr-shelf", kwargs={'pk': shelf.id})
+        return context
+    
     def test_func(self):
         shelf = self.get_object()
         if self.request.user == shelf.owner:
             return True
         return False
     
+
 class ShelfDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Shelf
     template_name = "shelfs/confirm_delete.html"
 
     def get_success_url(self):
         return reverse('shelfr-home')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        shelf = self.get_object()
+        context['cancel_url'] = reverse_lazy("shelfr-shelf", kwargs={'pk': shelf.id})
+        return context
 
     def test_func(self):
         shelf = self.get_object()
         if self.request.user == shelf.owner:
             return True
         return False
+
 
 class ItemCreateView(LoginRequiredMixin, CreateView):
     model = Item
@@ -71,6 +87,7 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse('shelfr-shelf', kwargs={'pk': self.kwargs['pk']})
     
+
 class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Item
     fields = ['title', 'content', 'image', 'quantity']
@@ -85,14 +102,22 @@ class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         item = self.get_object()
         return reverse('shelfr-item-detail', kwargs={'shelf_pk': item.shelf.id, 'pk': item.id})
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        item = self.get_object()
+        context['cancel_url'] = reverse_lazy("shelfr-item-detail", kwargs={'shelf_pk': item.shelf.id, 'pk': item.id})
+        return context
+
     def test_func(self):
         item = self.get_object()
         if self.request.user == item.shelf.owner:
             return True
         return False
 
+
 class ItemDetailView(LoginRequiredMixin, DetailView):
     model = Item
+
 
 class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Item
@@ -101,6 +126,12 @@ class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def get_success_url(self):
         item = self.get_object()
         return reverse('shelfr-shelf', kwargs={'pk': item.shelf.id})
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        item = self.get_object()
+        context['cancel_url'] = reverse_lazy("shelfr-item-detail", kwargs={'shelf_pk': item.shelf.id, 'pk': item.id})
+        return context
 
     def test_func(self):
         item = self.get_object()

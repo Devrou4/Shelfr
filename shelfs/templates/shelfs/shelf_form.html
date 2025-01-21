@@ -1,7 +1,7 @@
 {% extends "shelfs/base.html" %}
 {% block content %}
 {% load crispy_forms_tags %}
-    <div class="container">
+    <div class="container m-5">
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <fieldset class="form-group">
@@ -9,6 +9,9 @@
             </fieldset>
             <fieldset class="form-group">
                 <button class="btn btn-primary" type="submit">Submit</button>
+                {% if 'update' in request.path %}
+                <a class="btn btn-outline-secondary" href="{{ cancel_url }}">Cancel</a>
+                {% endif %}
             </fieldset>
         </form>
     </div>
