@@ -12,4 +12,5 @@ urlpatterns = [
     path('shelf/<int:shelf_pk>/<int:pk>/', ItemDetailView.as_view(), name='shelfr-item-detail'),
     path('shelf/<int:shelf_pk>/<int:pk>/update/', ItemUpdateView.as_view(), name='shelfr-item-update'),
     path('shelf/<int:shelf_pk>/<int:pk>/delete/', ItemDeleteView.as_view(), name='shelfr-item-delete'),
+    path('search/', views.search, name='shelfr-search'),
 ]

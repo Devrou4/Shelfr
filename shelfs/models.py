@@ -38,6 +38,7 @@ class Item(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     date = models.DateTimeField(default=timezone.now)
     shelf = models.ForeignKey(Shelf, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title

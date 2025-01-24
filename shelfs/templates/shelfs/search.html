@@ -1,0 +1,41 @@
+{% extends "shelfs/base.html" %}
+{% block content %}
+  
+      <div class="container-fluid">
+        <h1 class="m-3">Shelves</h1>
+        <div class="row row-cols-auto g-3 m-3 text-center">
+          {% for shelf in shelfs %}
+          <div class="col">
+            <a href="{% url 'shelfr-shelf' shelf.id %}" style="text-decoration: none;">
+            <div class="card" style="height: 300px; width: 200px;">
+              <img src="{{ shelf.image.url }}" class="card-img-top" style="object-fit: cover; height: 240px;" alt="...">
+              <div class="card-body" style="height: 60px">
+                <h5 class="card-title">{{ shelf.title }}</h5>
+                {% comment %} <p class="card-text">{{ shelf.content }}</p> {% endcomment %}
+              </div>
+            </div>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+
+        <h1 class="m-3">Items</h1>
+        <div class="row row-cols-auto g-3 m-3 text-center">
+        {% for item in items %}
+        <div class="col">
+          <a href="{% url 'shelfr-item-detail' shelf_pk=item.shelf.id pk=item.pk %}" style="text-decoration: none;">
+          <div class="card" style="height: 300px; width: 200px;">
+            <img src="{{ item.image.url }}" class="card-img-top p-1" style="object-fit: scale-down; height: 200px; " alt="Item">
+            <div class="card-body">
+              <h5 class="card-title">{{ item.title }} x{{ item.quantity }}</h5>
+              <p class="card-text">{{ item.content }}</p>
+            </div>
+              
+          </div>
+          </a>
+        </div>
+        {% endfor %}
+        </div>
+    </div>
+
+{% endblock content %}

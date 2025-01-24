@@ -17,6 +17,15 @@ def shelf(request, pk):
     context = { 'items': Item.objects.filter(shelf_id=pk), 'shelf_id':pk, 'shelf':shelf  }
     return render(request, 'shelfs/shelf.html', context)
 
+@login_required
+def search(request):
+
+    query = request.GET.get('q')
+    
+    shelfs = Shelf.objects.filter(owner_id=request.user.id, title__icontains=query)
+    items = Item.objects.filter(owner_id=request.user.id, title__icontains=query)
+    return render(request, 'shelfs/search.html', {'shelfs':shelfs, 'items':items})
+
 
 class ShelfCreateView(LoginRequiredMixin, CreateView):
     model = Shelf
@@ -81,6 +90,7 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         shelf = get_object_or_404(Shelf, pk=self.kwargs['pk'])
         form.instance.shelf = shelf
+        form.instance.owner = self.request.user
 
         return super().form_valid(form)
     
