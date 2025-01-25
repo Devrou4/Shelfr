@@ -25,7 +25,7 @@ def search(request):
     query = request.GET.get('q')
     
     shelfs = Shelf.objects.filter(owner_id=request.user.id, title__icontains=query)
-    items = Item.objects.filter(Q(title__icontains=query) | Q(tags__name__icontains=query), owner_id=request.user.id)
+    items = Item.objects.filter(Q(title__icontains=query) | Q(tags__name__icontains=query), owner_id=request.user.id).distinct()
 
     return render(request, 'shelfs/search.html', {'shelfs':shelfs, 'items':items})
 

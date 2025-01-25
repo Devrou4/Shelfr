@@ -21,12 +21,14 @@
 <div class="container text-center d-flex flex-column justify-content-center align-items-center mt-5">
     <h1 class="">{{ object.title }} x{{ object.quantity }}</h1>
 
-    <img src="{{ object.image.url }}" class="img-thumbnail" style="height: 500px; width:auto;">
+    <img src="{{ object.image.url }}" class="img-thumbnail" style="height: 500px; width:auto; {% if object.image.url == '/static/icons/item.svg' %}object-fit: scale-down; {% endif %}">
     <span class="text-muted fw-light mb-3">Added on {{ object.date }}</span>
 
-    <div class="bg-body-secondary border rounded w-50 align-self-center">
+    {% if item.content %}
+    <div class="bg-body-secondary border rounded w-50 align-self-center mb-1">
         {{ object.content }}
     </div>
+    {% endif %}
 
     <div>
     {% if item.tags.all %}
