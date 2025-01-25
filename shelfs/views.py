@@ -4,6 +4,8 @@ from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Shelf, Item
+from django.db.models import Q
+from taggit.models import Tag
 
 # Create your views here.
 @login_required
@@ -23,9 +25,18 @@ def search(request):
     query = request.GET.get('q')
     
     shelfs = Shelf.objects.filter(owner_id=request.user.id, title__icontains=query)
-    items = Item.objects.filter(owner_id=request.user.id, title__icontains=query)
+    items = Item.objects.filter(Q(title__icontains=query) | Q(tags__name__icontains=query), owner_id=request.user.id)
+
     return render(request, 'shelfs/search.html', {'shelfs':shelfs, 'items':items})
 
+@login_required
+def tags(request):
+
+    tags = Tag.objects.filter(item__owner=request.user).distinct()
+
+    tags_with_items = {tag: Item.objects.filter(tags=tag, owner=request.user) for tag in tags}
+
+    return render(request, 'shelfs/tags.html', {'tags_with_items':tags_with_items})
 
 class ShelfCreateView(LoginRequiredMixin, CreateView):
     model = Shelf
@@ -85,7 +96,7 @@ class ShelfDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 class ItemCreateView(LoginRequiredMixin, CreateView):
     model = Item
-    fields = ['title', 'content', 'image', 'quantity']
+    fields = ['title', 'content', 'image', 'quantity', 'tags']
 
     def form_valid(self, form):
         shelf = get_object_or_404(Shelf, pk=self.kwargs['pk'])
@@ -100,7 +111,7 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
 
 class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Item
-    fields = ['title', 'content', 'image', 'quantity']
+    fields = ['title', 'content', 'image', 'quantity', 'tags']
 
     def form_valid(self, form):
         shelf = get_object_or_404(Shelf, pk=self.kwargs['shelf_pk'])

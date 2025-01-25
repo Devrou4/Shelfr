@@ -1,0 +1,7 @@
+*.py linguist-detectable=true
+
+templates/* linguist-generated
+
+static/* linguist-vendored
+
+migrations/* linguist-vendored

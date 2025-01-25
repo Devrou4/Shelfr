@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from os.path import join
+from taggit.managers import TaggableManager
 
 def item_image_upload_path(instance, filename):
     """
@@ -39,6 +40,7 @@ class Item(models.Model):
     date = models.DateTimeField(default=timezone.now)
     shelf = models.ForeignKey(Shelf, on_delete=models.CASCADE)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    tags = TaggableManager()
 
     def __str__(self):
         return self.title
