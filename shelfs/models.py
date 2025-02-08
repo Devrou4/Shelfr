@@ -33,14 +33,14 @@ class Shelf(models.Model):
         return self.title
     
 class Item(models.Model):
-    title = models.CharField(max_length=20)
+    title = models.CharField(max_length=25)
     content = models.TextField(blank=True, null=True)
     image = models.ImageField(default='../static/icons/item.svg', upload_to=item_image_upload_path)
     quantity = models.PositiveIntegerField(default=1)
     date = models.DateTimeField(default=timezone.now)
     shelf = models.ForeignKey(Shelf, on_delete=models.CASCADE)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
 
     def __str__(self):
         return self.title

@@ -66,8 +66,13 @@
       </div>
 
       <div class="flex-grow-1">
-
+        
         <div class="d-flex justify-content-end align-items-center p-3 border-bottom bg-dark text-white" style="height: 68px;">
+          <button class="btn btn-outline-secondary me-3" onclick="history.back()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left-fill mb-1" viewBox="0 0 16 16">
+              <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+            </svg>
+          </button>
           <!-- Add any content you want here -->
           {% if 'delete' in request.path %}
           <div class="me-auto fs-5">{{ shelf.title }} {{ object.shelf.title }} / {% if object.shelf %}{{object.title}} / {% endif %}<span class="text-danger">DELETE</span></div>
@@ -79,8 +84,13 @@
           <div class="me-auto fs-5">{{ shelf.title }} {{ object.shelf.title }} / {{ object.title }}</div>
           {% endif %}
 
-          <form action='/search/' method='GET' class=" me-auto">
-            <input type="text" name="q" class="form-control" placeholder="Search" style="width: 500px">
+          <form action='/search/' method='GET' class="input-group me-auto" style="width: 500px">
+            <input type="text" name="q" class="form-control" placeholder="Search" >
+            <button class="btn btn-outline-secondary" type="submit">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search mb-1" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+              </svg>
+            </button>
           </form>
 
           {% block actions %}{% endblock actions %}
