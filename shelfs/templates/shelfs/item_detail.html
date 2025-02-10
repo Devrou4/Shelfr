@@ -19,16 +19,22 @@
 {% endblock actions %}
 {% block content %}
 <div class="container text-center d-flex flex-column justify-content-center align-items-center mt-5">
-    <h1 class="">{{ object.title }} x{{ object.quantity }}</h1>
+    <h1 class="">{{ object.title }} <span class="text-muted">x{{ object.quantity }}</span></h1>
 
-    <img src="{{ object.image.url }}" class="img-thumbnail" style="height: 500px; width:auto; {% if object.image.url == '/static/icons/item.svg' %}object-fit: scale-down; {% endif %}">
+    <!--  TODO: multiple images and image names -->
+    <a data-bs-toggle="modal" data-bs-target="#imgPreview">
+      <img src="{{ object.image.url }}" class="img-thumbnail" style="height: 500px; width:auto; object-fit: scale-down;">
+    </a>
     <span class="text-muted fw-light mb-3">Added on {{ object.date }}</span>
+    
 
     {% if item.content %}
     <div class="bg-body-secondary border rounded w-50 align-self-center mb-1">
         {{ object.content }}
     </div>
     {% endif %}
+
+    <!--  TODO: Link to next and previous items -->
 
     <div>
     {% if item.tags.all %}
@@ -45,6 +51,24 @@
 
     {% endif %}
     </div>
-
 </div>
+
+<div class="modal" id="imgPreview" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content" style="background-color: transparent;">
+      <div class="modal-header" style="border-bottom: none">
+        
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="d-flex flex-column justify-content-center align-items-center flex-grow-1">
+        <img class="align-self-center" style="max-width: 90%; max-height: 85vh" src="{{ object.image.url }}">
+        <h1 class="modal-title fs-3" id="exampleModalLabel">{{ object.title }}</h1>
+      </div>
+      <div class="modal-footer justify-content-center" style="border-top: none">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock content %}
