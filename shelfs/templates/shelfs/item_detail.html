@@ -21,10 +21,39 @@
 <div class="container text-center d-flex flex-column justify-content-center align-items-center mt-5">
     <h1 class="">{{ object.title }} <span class="text-muted">x{{ object.quantity }}</span></h1>
 
-    <!--  TODO: multiple images and image names -->
-    <a data-bs-toggle="modal" data-bs-target="#imgPreview">
-      <img src="{{ object.image.url }}" class="img-thumbnail" style="height: 500px; width:auto; object-fit: scale-down;">
-    </a>
+
+    <div id="carouselItemImage" class="carousel slide">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <a href="#" data-bs-toggle="modal" data-bs-target="#imgPreview" data-bs-image="{{ object.image.url }}">
+            <img src="{{ object.image.url }}" class="img-thumbnail" style="height: 500px; width:auto; object-fit: scale-down;">
+          </a>
+        </div>
+        {% for image in additional_images %}
+        <div class="carousel-item">
+          <a href="#" data-bs-toggle="modal" data-bs-target="#imgPreview" data-bs-image="{{ image.image.url }}">
+            <img src="{{ image.image.url }}" class="img-thumbnail" style="height: 500px; width:auto; min-width:700px; object-fit: scale-down;">
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    
+      {% if additional_images %}
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselItemImage" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselItemImage" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+      {% endif %}
+    </div>
+    
+
+
+
+    
     <span class="text-muted fw-light mb-3">Added on {{ object.date }}</span>
     
 
@@ -51,13 +80,15 @@
 
     {% endif %}
     </div>
+
+
 </div>
 
 <div class="modal" id="imgPreview" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-fullscreen">
     <div class="modal-content" style="background-color: transparent;">
       <div class="modal-header" style="border-bottom: none">
-        <a class="ms-auto btn-close text-decoration-none d-flex align-items-center justify-content-center" style="--bs-btn-close-bg: none;" href="{{ object.image.url }}" download>
+        <a id="downloadLink" class="ms-auto btn-close text-decoration-none d-flex align-items-center justify-content-center" style="--bs-btn-close-bg: none;">
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16" style="transform: scale(1.3);">
             <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
             <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
@@ -66,7 +97,7 @@
         <button type="button" class="btn-close ms-3" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="d-flex flex-column justify-content-center align-items-center flex-grow-1">
-        <img class="align-self-center" style="max-width: 90%; max-height: 85vh" src="{{ object.image.url }}">
+        <img class="align-self-center" style="max-width: 90%; max-height: 85vh" id="modalImage" src="">
         <h1 class="modal-title fs-3" id="exampleModalLabel">{{ object.title }}</h1>
       </div>
       <div class="modal-footer justify-content-center" style="border-top: none">
@@ -75,5 +106,30 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Find all modal trigger elements
+    const modalTriggers = document.querySelectorAll('[data-bs-toggle="modal"]');
+    
+    // Add event listener to each modal trigger
+    modalTriggers.forEach(trigger => {
+      trigger.addEventListener('click', function() {
+        // Get the image URL from the data-bs-image attribute
+        const imageUrl = trigger.getAttribute('data-bs-image');
+        
+        // Update the modal's image source
+        const modalImage = document.getElementById('modalImage');
+        modalImage.src = imageUrl;
+        
+        // Update the download button's href to the image URL
+        const downloadLink = document.getElementById('downloadLink');
+        downloadLink.href = imageUrl;  // This will make the button download the image
+        downloadLink.download = imageUrl.split('/').pop();  // This will give the image the filename of its last part (e.g., image.jpg)
+      });
+    });
+  });
+</script>
+
 
 {% endblock content %}

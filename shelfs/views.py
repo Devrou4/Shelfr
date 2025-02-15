@@ -3,9 +3,10 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .models import Shelf, Item
+from .models import Shelf, Item, ItemImage
 from django.db.models import Q
 from taggit.models import Tag
+from .forms import ItemForm
 
 # Create your views here.
 @login_required
@@ -96,48 +97,68 @@ class ShelfDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 class ItemCreateView(LoginRequiredMixin, CreateView):
     model = Item
-    fields = ['title', 'content', 'image', 'quantity', 'tags']
+    form_class = ItemForm
 
     def form_valid(self, form):
         shelf = get_object_or_404(Shelf, pk=self.kwargs['pk'])
         form.instance.shelf = shelf
         form.instance.owner = self.request.user
+        
+        response = super().form_valid(form)  # Save the Item first
 
-        return super().form_valid(form)
-    
+        # Now handle additional images (after item is saved)
+        images = self.request.FILES.getlist('additional_images')
+        for img in images:
+            ItemImage.objects.create(item=self.object, image=img)  # No need for shelf
+
+        return response
+
     def get_success_url(self):
         return reverse('shelfr-shelf', kwargs={'pk': self.kwargs['pk']})
+
+
     
 
 class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Item
-    fields = ['title', 'content', 'image', 'quantity', 'tags']
+    form_class = ItemForm
 
     def form_valid(self, form):
         shelf = get_object_or_404(Shelf, pk=self.kwargs['shelf_pk'])
         form.instance.shelf = shelf
+        response = super().form_valid(form)
 
-        return super().form_valid(form)
-    
+        images = self.request.FILES.getlist('additional_images')
+        for img in images:
+            ItemImage.objects.create(item=self.object, image=img)
+
+        return response
+
     def get_success_url(self):
         item = self.get_object()
         return reverse('shelfr-item-detail', kwargs={'shelf_pk': item.shelf.id, 'pk': item.id})
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         item = self.get_object()
+        context['additional_images'] = item.itemimage_set.all()
         context['cancel_url'] = reverse_lazy("shelfr-item-detail", kwargs={'shelf_pk': item.shelf.id, 'pk': item.id})
         return context
 
     def test_func(self):
         item = self.get_object()
-        if self.request.user == item.shelf.owner:
-            return True
-        return False
+        return self.request.user == item.shelf.owner
+
 
 
 class ItemDetailView(LoginRequiredMixin, DetailView):
     model = Item
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        item = self.get_object()
+        context['additional_images'] = ItemImage.objects.filter(item=item)  # Get all images for the item
+        return context
 
 
 class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
