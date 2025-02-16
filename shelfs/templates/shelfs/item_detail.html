@@ -51,6 +51,26 @@
 
     {% endif %}
     </div>
+
+    
+    <div class="container d-flex justify-content-around">
+      {% if previous_item %}
+          <a href="{% url 'shelfr-item-detail' shelf_pk=previous_item.shelf.id pk=previous_item.id %}">&lt; {{ previous_item.title }}</a>
+      {% else %}
+          <span></span>  {# Keeps spacing even when no previous item exists #}
+      {% endif %}
+  
+      {% if next_item %}
+          <a href="{% url 'shelfr-item-detail' shelf_pk=next_item.shelf.id pk=next_item.id %}">{{ next_item.title }} &gt;</a>
+      {% else %}
+          <span></span>  {# Keeps spacing even when no next item exists #}
+      {% endif %}
+  </div>
+  
+    
+  
+
+
 </div>
 
 <div class="modal" id="imgPreview" tabindex="-1" aria-hidden="true">

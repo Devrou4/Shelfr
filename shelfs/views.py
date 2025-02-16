@@ -139,6 +139,18 @@ class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class ItemDetailView(LoginRequiredMixin, DetailView):
     model = Item
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        item = self.get_object()
+        items = list(Item.objects.filter(shelf=item.shelf).distinct())
+
+        current_index = next((i for i, obj in enumerate(items) if obj.id == item.id), None)
+
+        context["previous_item"] = items[current_index - 1] if current_index is not None and current_index > 0 else None
+        context["next_item"] = items[current_index + 1] if current_index is not None and current_index < len(items) - 1 else None
+        context["items_in_shelf"] = items
+        return context
+
 
 class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Item
