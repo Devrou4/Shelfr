@@ -21,10 +21,10 @@
 
 
       <div class="container-fluid">
-        <div class="row row-cols-auto g-3 m-3 text-center">
+        <div class="row row-cols-auto g-3 m-3 text-center" id="item-list">
 
           {% for item in items %}
-          <div class="col">
+          <div class="col" data-id="{{ item.id }}"" id="card">
             <a href="{% url 'shelfr-item-detail' shelf_pk=shelf_id pk=item.pk %}" style="text-decoration: none;">
             <div class="card" style="height: 300px; width: 200px;">
               <img src="{{ item.image.url }}" class="card-img-top p-1" style="object-fit: scale-down; height: 200px; " alt="Item">
@@ -37,7 +37,7 @@
           </div>
           {% endfor %}
 
-          <div class="col">
+          <div class="col" id="static-card">
             <a href="{% url 'shelfr-item-new' pk=shelf_id %}">
             <div class="card d-flex justify-content-center align-items-center" style="height: 300px; width: 200px;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
@@ -48,5 +48,34 @@
             </a>
           </div>
 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+<script>
+  let sortable = new Sortable(document.getElementById("item-list"), {
+    animation: 150,
+    filter: "#static-card",
+    onEnd: function (evt) {
+        let order = [];
+        let list = document.querySelectorAll("#item-list #card");
+
+        let staticCard = document.getElementById("static-card");
+        document.getElementById("item-list").appendChild(staticCard);
+
+        list.forEach((el, index) => {
+            order.push({ id: el.getAttribute("data-id"), position: index });
+        });
+
+        fetch("{% url 'reorder_items' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ order: order }),
+        });
+    }
+});
+
+</script>
 
 {% endblock content %}

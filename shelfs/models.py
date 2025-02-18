@@ -28,6 +28,11 @@ class Shelf(models.Model):
     content = models.TextField(blank=True, null=True)
     image = models.ImageField(default='../static/icons/shelf.svg', upload_to=shelf_image_upload_path)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    order = models.PositiveIntegerField(default=100_000)
+
+
+    class Meta:
+        ordering = ["order"]
 
     def __str__(self):
         return self.title
@@ -41,6 +46,11 @@ class Item(models.Model):
     shelf = models.ForeignKey(Shelf, on_delete=models.CASCADE)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     tags = TaggableManager(blank=True)
+    order = models.PositiveIntegerField(default=100_000)
+
+
+    class Meta:
+        ordering = ["order"]
 
     def __str__(self):
         return self.title

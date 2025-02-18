@@ -6,6 +6,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Shelf, Item
 from django.db.models import Q
 from taggit.models import Tag
+from django.http import JsonResponse
+import json
 
 # Create your views here.
 @login_required
@@ -37,6 +39,23 @@ def tags(request):
     tags_with_items = {tag: Item.objects.filter(tags=tag, owner=request.user) for tag in tags}
 
     return render(request, 'shelfs/tags.html', {'tags_with_items':tags_with_items})
+
+def reorder_shelves(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        for shelf in data["order"]:
+            Shelf.objects.filter(id=shelf["id"]).update(order=shelf["position"])
+        return JsonResponse({"status": "success"})
+    return JsonResponse({"status": "error"}, status=400)
+
+def reorder_items(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        for item in data["order"]:
+            Item.objects.filter(id=item["id"]).update(order=item["position"])
+        return JsonResponse({"status": "success"})
+    return JsonResponse({"status": "error"}, status=400)
+
 
 class ShelfCreateView(LoginRequiredMixin, CreateView):
     model = Shelf

@@ -34,8 +34,7 @@
     </div>
     {% endif %}
 
-    <!--  TODO: Link to next and previous items -->
-
+    
     <div>
     {% if item.tags.all %}
     <h3>TAGS:</h3>
@@ -57,13 +56,13 @@
       {% if previous_item %}
           <a href="{% url 'shelfr-item-detail' shelf_pk=previous_item.shelf.id pk=previous_item.id %}">&lt; {{ previous_item.title }}</a>
       {% else %}
-          <span></span>  {# Keeps spacing even when no previous item exists #}
+          <span></span>
       {% endif %}
   
       {% if next_item %}
           <a href="{% url 'shelfr-item-detail' shelf_pk=next_item.shelf.id pk=next_item.id %}">{{ next_item.title }} &gt;</a>
       {% else %}
-          <span></span>  {# Keeps spacing even when no next item exists #}
+          <span></span>
       {% endif %}
   </div>
   

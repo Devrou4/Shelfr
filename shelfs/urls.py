@@ -14,4 +14,6 @@ urlpatterns = [
     path('shelf/<int:shelf_pk>/<int:pk>/delete/', ItemDeleteView.as_view(), name='shelfr-item-delete'),
     path('search/', views.search, name='shelfr-search'),
     path('tags/', views.tags, name='shelfr-tags'),
+    path("reorder_shelves/", views.reorder_shelves, name="reorder_shelves"),
+    path("reorder_items/", views.reorder_items, name="reorder_items"),
 ]
