@@ -3,11 +3,13 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib import messages
 from .models import Shelf, Item
 from django.db.models import Q
 from taggit.models import Tag
 from django.http import JsonResponse
 import json
+from .forms import ItemForm
 
 # Create your views here.
 @login_required
@@ -130,29 +132,30 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
 
 class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Item
-    fields = ['title', 'content', 'image', 'quantity', 'tags']
+    form_class = ItemForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
 
     def form_valid(self, form):
-        shelf = get_object_or_404(Shelf, pk=self.kwargs['shelf_pk'])
-        form.instance.shelf = shelf
-
         return super().form_valid(form)
-    
+
     def get_success_url(self):
         item = self.get_object()
-        return reverse('shelfr-item-detail', kwargs={'shelf_pk': item.shelf.id, 'pk': item.id})
-    
+        messages.success(self.request, f"{item.title} successfuly moved to {item.shelf.title}!")
+        return reverse("shelfr-item-detail", kwargs={"shelf_pk": item.shelf.id, "pk": item.id})
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         item = self.get_object()
-        context['cancel_url'] = reverse_lazy("shelfr-item-detail", kwargs={'shelf_pk': item.shelf.id, 'pk': item.id})
+        context["cancel_url"] = reverse_lazy("shelfr-item-detail", kwargs={"shelf_pk": item.shelf.id, "pk": item.id})
         return context
 
     def test_func(self):
         item = self.get_object()
-        if self.request.user == item.shelf.owner:
-            return True
-        return False
+        return self.request.user == item.shelf.owner
 
 
 class ItemDetailView(LoginRequiredMixin, DetailView):
